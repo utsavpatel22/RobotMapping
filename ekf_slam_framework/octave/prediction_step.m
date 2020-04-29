@@ -28,6 +28,8 @@ Gx = [1, 0, - u.t * sin(theta_old + u.r1); 0, 1, u.t * cos(theta_old + u.r1); 0,
 % TODO: Construct the full Jacobian G
 G = zeros(size(sigma,1));
 G(1:3,1:3) = Gx;
+G(4:size(sigma,1),4:size(sigma,1)) = eye(size(sigma,1) - 3);
+
 
 % Motion noise
 motionNoise = 0.1;
