@@ -30,7 +30,7 @@ lambda = alpha*alpha*(n+kappa)-n;
 
 % Plot original distribution with sampled sigma points
 plot(mu(1),mu(2),'ro','markersize',12, 'linewidth',3)
-legend('original distribution')
+##legend('original distribution')
 drawprobellipse(mu, sigma, 0.9, 'r');
 plot(sigma_points(1,:),sigma_points(2,:),'kx','markersize', 10, 'linewidth',3)
 
@@ -43,10 +43,11 @@ sigma_points_trans = transform(sigma_points);
 
 % Plot transformed sigma points with corresponding mu and sigma
 plot(mu_trans(1),mu_trans(2),'bo','markersize', 12, 'linewidth',3)
-legend('transformed distribution')
+##legend('transformed distribution')
 drawprobellipse(mu_trans, sigma_trans, 0.9, 'b');
 plot(sigma_points_trans(1,:),sigma_points_trans(2,:),'kx','markersize', 10, 'linewidth',3)
 
+legend('original mu', 'original sigma', 'sigma points', 'transformed mu', 'transformed sigma')
 % Figure axes setup
 title('Unscented Transform', 'fontsize', 20)
 x_min = min(mu(1),mu_trans(1));
