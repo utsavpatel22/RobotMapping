@@ -34,6 +34,7 @@ legend('original distribution')
 drawprobellipse(mu, sigma, 0.9, 'r');
 plot(sigma_points(1,:),sigma_points(2,:),'kx','markersize', 10, 'linewidth',3)
 
+
 % Transform sigma points
 sigma_points_trans = transform(sigma_points);
 

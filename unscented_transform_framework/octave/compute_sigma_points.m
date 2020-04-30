@@ -12,8 +12,26 @@ sigma_points = zeros(n,2*n+1);
 
 % TODO: compute all sigma points
 
+sigma_points = mu;
+mu_tp = mu;
+sqrt_matrix = sqrtm((n+lambda) * sigma);
+
+for i = 1:n
+  positive = mu + sqrt_matrix(:,i);
+  negative = mu - sqrt_matrix(:,i);
+  sigma_points = [sigma_points,positive, negative]
+endfor
+
 
 % TODO compute weight vectors w_m and w_c
+
+w_m = lambda/ (n + lambda);
+w_c = w_m + (1 - alpha**2 + beta);
+
+for i = 1: (2*n)
+  value = 1 / (2 * (n + lambda));
+  w_m = [w_m ,value];
+  w_c = [w_c, value];
 
 
 end

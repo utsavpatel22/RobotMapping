@@ -8,26 +8,26 @@ function [points] = transform(points)
 %%%%%
 % Function 1 (linear)
 % Applies a translation to [x; y]
-points(1,:) = points(1,:) + 1;
-points(2,:) = points(2,:) + 2;
+##points(1,:) = points(1,:) + 1;
+##points(2,:) = points(2,:) + 2;
 %%%%%
 
 %%%%%
-%{
-% Function 2 (nonlinear)
-% Computes the polar coordinates corresponding to [x; y]
+##{
+## Function 2 (nonlinear)
+## Computes the polar coordinates corresponding to [x; y]
 x = points(1,:);
 y = points(2,:);
 r = sqrt(sum([x.*x; y.*y]));
 theta = atan2(y,x);
 points = [r;theta];
-%}
+##}
 %%%%%
 
 %%%%%
-%{
-% Function 3 (nonlinear)
-points(1,:) = points(1,:).*cos(points(1,:)).*sin(points(1,:));
-points(2,:) = points(2,:).*cos(points(2,:)).*sin(points(2,:));
-%}
+##{
+## Function 3 (nonlinear)
+##points(1,:) = points(1,:).*cos(points(1,:)).*sin(points(1,:));
+##points(2,:) = points(2,:).*cos(points(2,:)).*sin(points(2,:));
+##}
 %%%%%

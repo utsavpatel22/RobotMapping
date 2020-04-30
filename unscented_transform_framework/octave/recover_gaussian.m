@@ -8,9 +8,16 @@ function [mu, sigma] = recover_gaussian(sigma_points, w_m, w_c)
 % Try to vectorize your operations as much as possible
 
 % TODO: compute mu
-
+n = length(sigma_points);
+k = (n-1) / 2;
+mu = zeros(k,1);
+sigma = zeros(k);
+for i = 1:n
+  mu += w_m(i) * sigma_points(:,i);
+end
 
 % TODO: compute sigma
-
-
-end
+for i = 1:n
+  sigma += w_c(i) * ((sigma_points(:,i) - mu) * (sigma_points(:,i) - mu)');
+  
+endfor
