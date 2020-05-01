@@ -12,9 +12,12 @@ n = length(sigma_points);
 k = (n-1) / 2;
 mu = zeros(k,1);
 sigma = zeros(k);
-for i = 1:n
-  mu += w_m(i) * sigma_points(:,i);
-end
+##for i = 1:n
+##  mu += w_m(i) * sigma_points(:,i);
+##end
+
+mu = sigma_points * w_m';
+
 
 % TODO: compute sigma
 for i = 1:n
