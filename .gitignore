@@ -2,3 +2,4 @@
 /ekf_slam_framework/plots/*
 /unscented_transform_framework/plots/*
 /ukf_slam_framework/plots/*
+/gridmaps_framework/plots/*
