@@ -35,8 +35,8 @@ global scale;
 scale = 3.0;
 
 % toogle the visualization type
-showGui = true;  % show a window while the algorithm runs
-%showGui = false; % plot to files instead
+##showGui = true;  % show a window while the algorithm runs
+showGui = false; % plot to files instead
 
 % Perform filter update for each odometry-observation pair read from the
 % data file.

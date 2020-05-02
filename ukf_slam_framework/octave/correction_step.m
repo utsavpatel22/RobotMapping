@@ -44,11 +44,15 @@ for i = 1:m
         % extract the current location of the landmark for each sigma point
         % Use this for computing an expected measurement, i.e., applying the h function
 	landmarkIndex = find(map==(z(i).id));
-	landmarkXs = sigma_points(2*landmarkIndex + 2, :);
-	landmarkYs = sigma_points(2*landmarkIndex + 3, :);
+	landmarkXs = sigma_points(2*landmarkIndex + 2, :)
+	landmarkYs = sigma_points(2*landmarkIndex + 3, :)
 
 	% TODO: Compute z_points (2x2n+1), which consists of predicted measurements from all sigma points
         % This corresponds to line 7 on slide 32
+        delta = [landmarkXs - sigma_points(1,:); landmarkYs - sigma_points(2,:)];
+        q = sqrt(diag(delta' * delta)');
+        z_points = [q; normalize_angle(atan2(delta(2,:),delta(1,:)) - sigma_points(3,:))];
+        
 
 
         % setup the weight vector for mean and covariance
@@ -60,19 +64,46 @@ for i = 1:m
 	% It will be a 2x1 vector [expected_range; expected_bearing].
         % For computing the expected_bearing compute a weighted average by
         % summing the sines/cosines of the angle
+        expected_range = z_points(1,:) * wm';
+        x_bar = cos(z_points(2,:)) * wm';
+        y_bar = sin(z_points(2,:)) * wm';
+        expected_bearing = atan2(y_bar, x_bar);
+        zm = [expected_range; expected_bearing];
+        
+        
 
 
 	% TODO: Compute the innovation covariance matrix S (2x2), line 9 on slide 32
         % Remember to normalize the bearing after computing the difference
+        S = zeros(2);
+        for j = 1:length(wc)
+          diff_s = (z_points(:,j) - zm);
+          diff_s(2) = normalize_angle(diff_s(2));
+          S += wc(j) * (diff_s * diff_s');
+          
+        endfor
+        S = S + Q;
 
 
 	% TODO: Compute Sigma_x_z, line 10 on slide 32
         % (which is equivalent to sigma times the Jacobian H transposed in EKF).
 	% sigma_x_z is an nx2 matrix, where n is the current dimensionality of mu
         % Remember to normalize the bearing after computing the difference
+        
+        Sigma_x_z = zeros(n,size(S,1));
+        for k = 1:length(wc)
+          diff_sigma = (sigma_points(:,k) - mu);
+          diff_sigma(3,:) = normalize_angle(diff_sigma(3,:));
+          diff_z = (z_points(:,k) - zm);
+          diff_z(2) = normalize_angle(diff_z(2));
+          Sigma_x_z += wc(k) * (diff_sigma * diff_z');
+          
+        endfor
 
 
 	% TODO: Compute the Kalman gain, line 11 on slide 32
+  
+  K = Sigma_x_z * inv(S);
 
 
 	% Get the actual measurement as a vector (for computing the difference to the observation)
@@ -80,8 +111,15 @@ for i = 1:m
 
 	% TODO: Update mu and sigma, line 12 + 13 on slide 32
         % normalize the relative bearing
+        
+  diff = z_actual - zm;
+  diff(2) = normalize_angle(diff(2));
+        
+  mu = mu + (K * diff);
+  sigma = sigma - (K * S * K');
 
 	% TODO: Normalize the robot heading mu(3)
+  mu(3) = normalize_angle(mu(3));
 
 
 endfor
