@@ -18,7 +18,7 @@ probOcc = 0.9;
 probFree = 0.35;
 
 % Map grid size in meters. Decrease for better resolution.
-gridSize = 0.5;
+gridSize = 0.1;
 
 % Set up map boundaries and initialize map.
 border = 30;
@@ -35,6 +35,7 @@ mapSize = ceil([mapSizeMeters/gridSize]);
 % Used when updating the map. Assumes that prob_to_log_odds.m
 % has been implemented correctly.
 logOddsPrior = prob_to_log_odds(prior);
+
 
 % The occupancy value of each cell in the map is initialized with the prior.
 map = logOddsPrior*ones(mapSize);
@@ -54,7 +55,6 @@ for(t=1:size(poses,1))
 	sc = laser(1,t);
 	% Compute the mapUpdate, which contains the log odds values to add to the map.
 	[mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(map, sc, robPose, gridSize, offset, probOcc, probFree);
-
 	mapUpdate -= logOddsPrior*ones(size(map));
 	% Update the occupancy values of the affected cells.
 	map += mapUpdate;

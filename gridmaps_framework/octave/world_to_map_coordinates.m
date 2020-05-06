@@ -8,5 +8,8 @@ function [pntsMap] = world_to_map_coordinates(pntsWorld, gridSize, offset)
 
 % TODO: compute pntsMap
 
+pntsWorld(1,:) = pntsWorld(1,:) - offset(1);
+pntsWorld(2,:) = pntsWorld(2,:) - offset(2); 
+pntsMap = ceil(pntsWorld(1:2,:)/gridSize);
 
 end

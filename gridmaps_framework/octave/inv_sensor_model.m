@@ -24,6 +24,7 @@ mapUpdate = zeros(size(map));
 robTrans = v2t(robPose);
 
 % TODO: compute robPoseMapFrame. Use your world_to_map_coordinates implementation.
+robPoseMapFrame = world_to_map_coordinates(robPose, gridSize, offset);
 
 
 % Compute the Cartesian coordinates of the laser beam endpoints.
@@ -33,6 +34,9 @@ laserEndPnts = robotlaser_as_cartesian(scan, 30, false);
 % Compute the endpoints of the laser beams in the world coordinates frame.
 laserEndPnts = robTrans*laserEndPnts;
 % TODO: compute laserEndPntsMapFrame from laserEndPnts. Use your world_to_map_coordinates implementation.
+
+laserEndPntsMapFrame = world_to_map_coordinates(laserEndPnts, gridSize, offset);
+
 
 
 % freeCells are the map coordinates of the cells through which the laser beams pass.
@@ -47,8 +51,11 @@ freeCells = [];
 for sc=1:columns(laserEndPntsMapFrame)
         %TODO: compute the XY map coordinates of the free cells along the laser beam ending in laserEndPntsMapFrame(:,sc)
 
+        [X,Y] = bresenham([robPoseMapFrame'; laserEndPntsMapFrame(:,sc)']);
+
 
         %TODO: add them to freeCells
+        freeCells = [freeCells; [X', Y']];
 
 
 endfor
@@ -56,8 +63,16 @@ endfor
 
 %TODO: update the log odds values in mapUpdate for each free cell according to probFree.
 
+for i = 1:size(freeCells,1)
+  mapUpdate(freeCells(i,1), freeCells(i,2)) = prob_to_log_odds(probFree);
+  
+endfor
+
 
 %TODO: update the log odds values in mapUpdate for each laser endpoint according to probOcc.
 
+for k = 1:size(laserEndPntsMapFrame,2)
+  mapUpdate(laserEndPntsMapFrame(1,k),laserEndPntsMapFrame(2,k)) = prob_to_log_odds(probOcc);
+  
 
 end
