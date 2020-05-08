@@ -3,3 +3,4 @@
 /unscented_transform_framework/plots/*
 /ukf_slam_framework/plots/*
 /gridmaps_framework/plots/*
+/pf_framework/plots/*
