@@ -26,7 +26,7 @@ end
 % Perform filter update for each odometry-observation read from the
 % data file.
 for t = 1:size(data.timestep, 2)
-%for t = 1:50
+##for t = 1:50
     printf('timestep = %d\n', t);
 
     % Perform the prediction step of the particle filter

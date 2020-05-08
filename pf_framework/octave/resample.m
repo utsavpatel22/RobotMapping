@@ -35,7 +35,19 @@ newParticles = struct;
 % initialize the step and the current position on the roulette wheel
 
 % walk along the wheel to select the particles
-for i = 1:numParticles
+r = unifrnd(0,(1/numParticles));
+c = w(1);
+i = 1;
+for j = 1:numParticles
+  U = r + (j -1) * (1/numParticles);
+  
+  while U > c
+    i += 1;
+    c += w(i);
+  endwhile
+  newParticles(j) = particles(i);
+  
+  
   
 end
 
