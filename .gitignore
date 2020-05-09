@@ -4,3 +4,4 @@
 /ukf_slam_framework/plots/*
 /gridmaps_framework/plots/*
 /pf_framework/plots/*
+/fastslam_framework/plots/*
