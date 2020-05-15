@@ -5,3 +5,4 @@
 /gridmaps_framework/plots/*
 /pf_framework/plots/*
 /fastslam_framework/plots/*
+/odom_calib_framework/plots/*
