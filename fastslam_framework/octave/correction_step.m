@@ -14,7 +14,7 @@ numParticles = length(particles);
 m = size(z, 2);
 
 % TODO: Construct the sensor noise matrix Q_t (2 x 2)
-
+Q_t = diag([0.1,0.1]);
 % process each particle
 for i = 1:numParticles
   robot = particles(i).pose;
@@ -32,11 +32,14 @@ for i = 1:numParticles
     if (particles(i).landmarks(l).observed == false)
 
       % TODO: Initialize its position based on the measurement and the current robot pose:
+      particles(i).landmarks(l).mu(1) = robot(1) + z(j).range * cos(normalize_angle( robot(3) + z(j).bearing));
+      particles(i).landmarks(l).mu(2) = robot(2) + z(j).range * sin(normalize_angle( robot(3) + z(j).bearing));
 
       % get the Jacobian with respect to the landmark position
       [h, H] = measurement_model(particles(i), z(j));
 
       % TODO: initialize the EKF for this landmark
+      particles(i).landmarks(l).sigma = inv(H) * Q_t * (inv(H))';
 
       % Indicate that this landmark has been observed
       particles(i).landmarks(l).observed = true;
@@ -47,15 +50,26 @@ for i = 1:numParticles
       [expectedZ, H] = measurement_model(particles(i), z(j));
 
       % TODO: compute the measurement covariance
+      Q = H * particles(i).landmarks(l).sigma * H' + Q_t;
 
       % TODO: calculate the Kalman gain
+      K = particles(i).landmarks(l).sigma * H' * inv(Q);
+      
 
       % TODO: compute the error between the z and expectedZ (remember to normalize the angle)
+      
+      error(1,1) = z(j).range - expectedZ(1);
+      error(2,1) = normalize_angle(z(j).bearing - expectedZ(2));
+      
 
       % TODO: update the mean and covariance of the EKF for this landmark
+      particles(i).landmarks(l).mu = particles(i).landmarks(l).mu + K * error;
+      
+      particles(i).landmarks(l).sigma = (eye(2) - K * H) * particles(i).landmarks(l).sigma;
 
       % TODO: compute the likelihood of this observation, multiply with the former weight
       %       to account for observing several features in one time step
+      particles(i).weight = particles(i).weight * (1/sqrt(det(2*pi*Q)) * exp((-0.5) * (error' * inv(Q) * error))); 
 
     end
 
