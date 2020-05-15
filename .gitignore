@@ -6,3 +6,4 @@
 /pf_framework/plots/*
 /fastslam_framework/plots/*
 /odom_calib_framework/plots/*
+/lsslam_framework/plots/*
