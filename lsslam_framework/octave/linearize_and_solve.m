@@ -9,12 +9,14 @@ nnz = nnz_of_graph(g);
 H = spalloc(length(g.x), length(g.x), nnz);
 b = zeros(length(g.x), 1);
 
+
 needToAddPrior = true;
 
 % compute the addend term to H and b for each of our constraints
 disp('linearize and build system');
 for eid = 1:length(g.edges)
   edge = g.edges(eid);
+
 
   % pose-pose constraint
   if (strcmp(edge.type, 'P') != 0)
@@ -32,14 +34,26 @@ for eid = 1:length(g.edges)
     % A Jacobian wrt x1
     % B Jacobian wrt x2
     [e, A, B] = linearize_pose_pose_constraint(x1, x2, edge.measurement);
+    
 
 
     % TODO: compute and add the term to H and b
+
+     b(edge.fromIdx:edge.fromIdx+2) += A' * edge.information * e;
+     b(edge.toIdx:edge.toIdx+2) += B' * edge.information * e;
+ 
+     H(edge.fromIdx:edge.fromIdx+2, edge.fromIdx:edge.fromIdx+2) += A' * edge.information * A;
+     H(edge.toIdx:edge.toIdx+2, edge.toIdx:edge.toIdx+2) += B' * edge.information * B;
+     H(edge.toIdx:edge.toIdx+2, edge.fromIdx:edge.fromIdx+2) += B' * edge.information * A;
+     H(edge.fromIdx:edge.fromIdx+2, edge.toIdx:edge.toIdx+2) += A' * edge.information * B;
+
+     
 
 
     if (needToAddPrior)
       % TODO: add the prior for one pose of this edge
       % This fixes one node to remain at its current location
+      H(edge.fromIdx:edge.fromIdx+2, edge.fromIdx:edge.fromIdx+2) += eye(3);
       
       needToAddPrior = false;
     end
@@ -63,6 +77,13 @@ for eid = 1:length(g.edges)
 
 
     % TODO: compute and add the term to H and b
+    b(edge.fromIdx:edge.fromIdx+2) += A' * edge.information * e;
+    b(edge.toIdx:edge.toIdx+1) += B' * edge.information * e;
+    
+    H(edge.fromIdx:edge.fromIdx+2, edge.fromIdx:edge.fromIdx+2) += A' * edge.information * A;
+    H(edge.toIdx:edge.toIdx+1, edge.toIdx:edge.toIdx+1) += B' * edge.information * B;
+    H(edge.toIdx:edge.toIdx+1, edge.fromIdx:edge.fromIdx+2) += B' * edge.information * A;
+    H(edge.fromIdx:edge.fromIdx+2, edge.toIdx:edge.toIdx+1) += A' * edge.information * B;
 
 
   end
@@ -73,5 +94,9 @@ disp('solving system');
 % TODO: solve the linear system, whereas the solution should be stored in dx
 % Remember to use the backslash operator instead of inverting H
 
+dx = -H\b;
+
+
+  
 
 end

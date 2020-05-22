@@ -18,7 +18,8 @@ function [e, A, B] = linearize_pose_pose_constraint(x1, x2, z)
   X2 = v2t(x2);
   Z = v2t(z);
   
-  e = [[Z(1:2,1:2)' * (X1(1:2,1:2)' * (x2(1:2) - x1(1:2)) - z(1:2))]; x2(3) - x1(3) - z(3)];
+  
+  e = t2v(Z\(X1\X2));
   A = zeros(3,3);
   A(:,1) = [ (-cos(x1(3)) * cos(z(3))) + sin(x1(3)) * sin(z(3)); cos(x1(3)) * sin(z(3)) + sin(x1(3)) * cos(z(3)); 0];
   A(:,2) = [ (-sin(x1(3)) * cos(z(3))) - (cos(x1(3)) * sin(z(3))); sin(x1(3)) * sin(z(3)) - (cos(x1(3)) * cos(z(3))); 0];

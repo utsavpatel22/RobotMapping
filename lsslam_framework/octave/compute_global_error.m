@@ -16,6 +16,12 @@ for eid = 1:length(g.edges)
     %TODO compute the error of the constraint and add it to Fx.
     % Use edge.measurement and edge.information to access the
     % measurement and the information matrix respectively.
+    
+    Z_inv = inv(v2t(edge.measurement));
+    e_const = t2v(Z_inv * (inv(x1) * x2));
+    F_temp = e_const' * edge.information * e_const ;
+    Fx += F_temp;
+    
 
   % pose-landmark constraint
   elseif (strcmp(edge.type, 'L') != 0)
@@ -25,6 +31,12 @@ for eid = 1:length(g.edges)
     %TODO compute the error of the constraint and add it to Fx.
     % Use edge.measurement and edge.information to access the
     % measurement and the information matrix respectively.
+    
+    x_trans = v2t(x);
+    R = x_trans(1:2,1:2);
+    e_const = (R' * (l - x(1:2))) - edge.measurement;
+    F_temp = e_const' * edge.information * e_const ;
+    Fx += F_temp;
 
   end
 
